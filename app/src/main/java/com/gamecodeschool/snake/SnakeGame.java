@@ -47,6 +47,7 @@ class SnakeGame extends SurfaceView implements Runnable{
     private Snake mSnake;
     // And an apple
     private Apple mApple;
+    private Button mButton;
 
 
     // This is the constructor method that gets called
@@ -103,6 +104,7 @@ class SnakeGame extends SurfaceView implements Runnable{
                         mNumBlocksHigh),
                 blockSize);
 
+        mButton = new Button(size);
     }
 
 
@@ -213,6 +215,7 @@ class SnakeGame extends SurfaceView implements Runnable{
             // Draw the apple and the snake
             mApple.draw(mCanvas, mPaint);
             mSnake.draw(mCanvas, mPaint);
+            mButton.drawControls(mCanvas, mPaint);
 
             // Draw some text while paused
             if(mPaused){
@@ -223,10 +226,8 @@ class SnakeGame extends SurfaceView implements Runnable{
 
                 // Draw the message
                 // We will give this an international upgrade soon
-                //mCanvas.drawText("Tap To Play!", 200, 700, mPaint);
-                mCanvas.drawText(getResources().
-                                getString(R.string.tap_to_play),
-                        200, 700, mPaint);
+                mCanvas.drawText("Tap To Play!", 200, 700, mPaint);
+
             }
 
 
@@ -276,4 +277,6 @@ class SnakeGame extends SurfaceView implements Runnable{
         mThread = new Thread(this);
         mThread.start();
     }
+
+
 }
