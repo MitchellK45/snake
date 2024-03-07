@@ -48,6 +48,7 @@ class SnakeGame extends SurfaceView implements Runnable{
     // And an apple
     private Apple mApple;
     private Button mButton;
+    private volatile boolean buttonTouched = false;
 
 
     // This is the constructor method that gets called
@@ -226,7 +227,8 @@ class SnakeGame extends SurfaceView implements Runnable{
 
                 // Draw the message
                 // We will give this an international upgrade soon
-                mCanvas.drawText("Tap To Play!", 200, 700, mPaint);
+                //mCanvas.drawText("Tap To Play!", 200, 700, mPaint);
+                mCanvas.drawText(getResources().getString(R.string.tap_to_play),200,700,mPaint);
 
             }
 
@@ -247,6 +249,19 @@ class SnakeGame extends SurfaceView implements Runnable{
                     // Don't want to process snake direction for this tap
                     return true;
                 }
+                else if(mButton.handleTouchEvent(motionEvent)){
+                    pause();
+                    buttonTouched = true;
+                    return true;
+                }
+                else if(buttonTouched){
+                    if(mButton.handleTouchEvent(motionEvent)){
+                        run();
+                        buttonTouched = false;
+                        return true;
+                    }
+                    resume();
+                }
 
                 // Let the Snake class handle the input
                 mSnake.switchHeading(motionEvent);
@@ -258,7 +273,6 @@ class SnakeGame extends SurfaceView implements Runnable{
         }
         return true;
     }
-
 
     // Stop the thread
     public void pause() {
