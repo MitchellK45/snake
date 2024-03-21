@@ -6,7 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.view.MotionEvent;
 
-class Button {
+class Button implements GameObject{
     private int mTextFormatting;
     private int mScreenHeight;
     private int mScreenWidth;
@@ -24,7 +24,7 @@ class Button {
         mButtonPadding = mScreenWidth / 90;
     }
 
-    void drawControls(Canvas c, Paint p) {
+    public void draw(Canvas c, Paint p) {
         // Draw button
         p.setColor(Color.argb(100, 255, 255, 255));
         c.drawRect(mScreenWidth - mButtonPadding - mButtonWidth,
