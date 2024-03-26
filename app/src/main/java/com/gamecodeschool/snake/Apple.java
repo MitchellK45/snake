@@ -22,6 +22,8 @@ class Apple implements GameObject{
     // An image to represent the apple
     private Bitmap mBitmapApple;
 
+
+
     /// Set up the apple in the constructor
     Apple(Context context, Point sr, int s){
 
@@ -54,6 +56,7 @@ class Apple implements GameObject{
     }
 
     // Draw the apple
+    @Override
     public void draw(Canvas canvas, Paint paint){
         canvas.drawBitmap(mBitmapApple,
                 location.x * mSize, location.y * mSize, paint);

@@ -17,7 +17,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import java.io.IOException;
 
-class SnakeGame extends SurfaceView implements Runnable{
+class SnakeGame extends SurfaceView implements Runnable, GameObject{
 
     // Objects for the game loop/thread
     private Thread mThread = null;
@@ -48,7 +48,7 @@ class SnakeGame extends SurfaceView implements Runnable{
     private Snake mSnake;
     // And an apple
     private Apple mApple;
-    private Button mButton;
+    private Pause_Button mPauseButton;
     private volatile boolean buttonTouched = false;
 
 
@@ -94,8 +94,9 @@ class SnakeGame extends SurfaceView implements Runnable{
         // Initialize the drawing objects
         mSurfaceHolder = getHolder();
         mPaint = new Paint();
+        mCanvas = new Canvas();
 
-        // Call the constructors of our two game objects
+        // Call the constructors of our game objects
         mApple = new Apple(context,
                 new Point(NUM_BLOCKS_WIDE,
                         mNumBlocksHigh),
@@ -106,7 +107,7 @@ class SnakeGame extends SurfaceView implements Runnable{
                         mNumBlocksHigh),
                 blockSize);
 
-        mButton = new Button(size);
+        mPauseButton = new Pause_Button(size);
     }
 
 
@@ -138,7 +139,7 @@ class SnakeGame extends SurfaceView implements Runnable{
                 }
             }
 
-            draw();
+            draw(mCanvas,mPaint);
         }
     }
 
@@ -199,47 +200,40 @@ class SnakeGame extends SurfaceView implements Runnable{
 
 
     // Do all the drawing
-    public void draw() {
+    @Override
+    public void draw(Canvas canvas,Paint mPaint) {
         // Get a lock on the mCanvas
         if (mSurfaceHolder.getSurface().isValid()) {
             mCanvas = mSurfaceHolder.lockCanvas();
 
             // Fill the screen with a color
-            mCanvas.drawColor(Color.argb(255, 26, 128, 255));
+            canvas.drawColor(Color.argb(255, 26, 128, 128 ));
 
             // Set the size and color of the mPaint for the text
             mPaint.setColor(Color.argb(255, 255, 255, 255));
             mPaint.setTextSize(120);
 
             // Draw the score
-            mCanvas.drawText("" + mScore, 20, 120, mPaint);
+            canvas.drawText("" + mScore, 20, 120, mPaint);
 
-            // Draw the apple and the snake
-            mApple.draw(mCanvas, mPaint);
-            mSnake.draw(mCanvas, mPaint);
-            mButton.draw(mCanvas, mPaint);
+            // Draw the apple,snake,and button
+            mApple.draw(canvas, mPaint);
+            mSnake.draw(canvas, mPaint);
+            mPauseButton.draw(canvas, mPaint);
 
             mPaint.setColor(Color.argb(255, 255, 255, 255));
-            mPaint.setTextSize(60); // Adjust size as needed
+            mPaint.setTextSize(60);
 
-            // Draw your name at the top of the canvas
-            mCanvas.drawText("Mitchell, Rajesh", 200, 60, mPaint);
+            mCanvas.drawText("Mitchell, Rajesh ", 1400, 60, mPaint);
+            Typeface typeface = Typeface.create(Typeface.SERIF, Typeface.BOLD_ITALIC);
+            mPaint.setTypeface(typeface);
 
-            // Draw some text while paused
+
             if(mPaused){
-
-                // Set the size and color of the mPaint for the text
                 mPaint.setColor(Color.argb(255, 255, 255, 255));
                 mPaint.setTextSize(130);
 
-                // Draw the message
-                // We will give this an international upgrade soon
-                //mCanvas.drawText("Tap To Play!", 200, 700, mPaint);
                 mCanvas.drawText(getResources().getString(R.string.tap_to_play),200,700,mPaint);
-
-                Typeface typeface = Typeface.create(Typeface.MONOSPACE, Typeface.ITALIC);
-                mPaint.setTypeface(typeface);
-
 
             }
 
@@ -253,7 +247,6 @@ class SnakeGame extends SurfaceView implements Runnable{
         }
     }
 
-    @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_UP:
@@ -264,7 +257,7 @@ class SnakeGame extends SurfaceView implements Runnable{
                     // Don't want to process snake direction for this tap
                     return true;
                 }
-                else if(mButton.handleTouchEvent(motionEvent)){
+                else if(mPauseButton.handleTouchEvent(motionEvent)){
                     if (buttonTouched) {
                         buttonTouched = false;
                         resume();
@@ -273,7 +266,7 @@ class SnakeGame extends SurfaceView implements Runnable{
                         pause();
                     }
                     return true;
-                } else {
+                } else if(!buttonTouched) {
                     // Let the Snake class handle the input
                     mSnake.switchHeading(motionEvent);
                 }
@@ -284,7 +277,6 @@ class SnakeGame extends SurfaceView implements Runnable{
         }
         return true;
     }
-    // Stop the thread
     public void pause() {
         mPlaying = false;
         try {
@@ -293,14 +285,9 @@ class SnakeGame extends SurfaceView implements Runnable{
             // Error
         }
     }
-
-
-    // Start the thread
     public void resume() {
         mPlaying = true;
         mThread = new Thread(this);
         mThread.start();
     }
-
-
 }

@@ -129,8 +129,6 @@ class Snake implements GameObject{
 
     void move() {
         // Move the body
-        // Start at the back and move it
-        // to the position of the segment in front of it
         for (int i = segmentLocations.size() - 1; i > 0; i--) {
 
             // Make it the same value as the next segment
@@ -163,7 +161,6 @@ class Snake implements GameObject{
         }
 
     }
-
     boolean detectDeath() {
         // Has the snake died?
         boolean dead = false;
@@ -190,7 +187,6 @@ class Snake implements GameObject{
     }
 
     boolean checkDinner(Point l) {
-        //if (snakeXs[0] == l.x && snakeYs[0] == l.y) {
         if (segmentLocations.get(0).x == l.x &&
                 segmentLocations.get(0).y == l.y) {
 
@@ -204,15 +200,12 @@ class Snake implements GameObject{
         }
         return false;
     }
-
+    @Override
     public void draw(Canvas canvas, Paint paint) {
         if (!segmentLocations.isEmpty()) {
             // Draw the head
             Bitmap headBitmap;
             switch (heading) {
-                case RIGHT:
-                    headBitmap = mBitmapHeadRight;
-                    break;
                 case LEFT:
                     headBitmap = mBitmapHeadLeft;
                     break;
@@ -223,7 +216,7 @@ class Snake implements GameObject{
                     headBitmap = mBitmapHeadDown;
                     break;
                 default:
-                    headBitmap = mBitmapHeadRight; // Default to right
+                    headBitmap = mBitmapHeadRight;
                     break;
             }
             canvas.drawBitmap(headBitmap,
