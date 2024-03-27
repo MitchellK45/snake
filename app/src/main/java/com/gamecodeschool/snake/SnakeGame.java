@@ -1,6 +1,8 @@
 package com.gamecodeschool.snake;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -42,6 +44,8 @@ class SnakeGame extends SurfaceView implements Runnable, GameObject{
     private Pause_Button mPauseButton;
     private volatile boolean buttonTouched = false;
     private SoundEngine mSoundEngine;
+    private Bitmap mBackground;
+    Typeface typeface = null;
 
 
     public SnakeGame(Context context, Point size) {
@@ -58,6 +62,8 @@ class SnakeGame extends SurfaceView implements Runnable, GameObject{
         mPaint = new Paint();
         mCanvas = new Canvas();
         mSoundEngine = new SoundEngine(context);
+        mBackground = BitmapFactory.decodeResource(context.getResources(), R.drawable.dog);
+        mBackground = Bitmap.createScaledBitmap(mBackground, size.x, size.y, true);
 
         // Call the constructors of our game objects
         mApple = new Apple(context,
@@ -143,9 +149,11 @@ class SnakeGame extends SurfaceView implements Runnable, GameObject{
         // Get a lock on the mCanvas
         if (mSurfaceHolder.getSurface().isValid()) {
             mCanvas = mSurfaceHolder.lockCanvas();
-
-            // Fill the screen with a color
-            canvas.drawColor(Color.argb(255, 26, 128, 128 ));
+            canvas.drawBitmap(mBackground, 0, 0, null);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                typeface = getResources().getFont(R.font.groovy);
+            }
+            mPaint.setTypeface(typeface);
 
             // Set the size and color of the mPaint for the text
             mPaint.setColor(Color.argb(255, 255, 255, 255));
@@ -159,12 +167,8 @@ class SnakeGame extends SurfaceView implements Runnable, GameObject{
             mSnake.draw(canvas, mPaint);
             mPauseButton.draw(canvas, mPaint);
 
-            mPaint.setColor(Color.argb(255, 255, 255, 255));
-            mPaint.setTextSize(60);
+            mCanvas.drawText("Mitchell, Rajesh ", 900, 120, mPaint);
 
-            mCanvas.drawText("Mitchell, Rajesh ", 1400, 60, mPaint);
-            Typeface typeface = Typeface.create(Typeface.SERIF, Typeface.BOLD_ITALIC);
-            mPaint.setTypeface(typeface);
 
 
             if(mPaused){
