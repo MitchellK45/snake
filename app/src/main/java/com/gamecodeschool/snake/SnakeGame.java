@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Typeface;
-import android.media.SoundPool;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -167,7 +166,7 @@ class SnakeGame extends SurfaceView implements Runnable, GameObject{
             mSnake.draw(canvas, mPaint);
             mPauseButton.draw(canvas, mPaint);
 
-            mCanvas.drawText("Mitchell, Rajesh ", 900, 120, mPaint);
+            mCanvas.drawText("Mitchell K, Rajesh S", 1200, 120, mPaint);
 
 
 
@@ -190,35 +189,29 @@ class SnakeGame extends SurfaceView implements Runnable, GameObject{
     }
 
     public boolean onTouchEvent(MotionEvent motionEvent) {
-        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_UP:
-                if (mPaused) {
-                    mPaused = false;
-                    newGame();
-
-                    // Don't want to process snake direction for this tap
-                    return true;
+        if ((motionEvent.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+            if (mPaused) {
+                mPaused = false;
+                newGame();
+                // Don't want to process snake direction for this tap
+                return true;
+            } else if (mPauseButton.handleTouchEvent(motionEvent)) {
+                if (buttonTouched) {
+                    buttonTouched = false;
+                    resume();
+                } else {
+                    buttonTouched = true;
+                    pause();
                 }
-                else if(mPauseButton.handleTouchEvent(motionEvent)){
-                    if (buttonTouched) {
-                        buttonTouched = false;
-                        resume();
-                    } else {
-                        buttonTouched = true;
-                        pause();
-                    }
-                    return true;
-                } else if(!buttonTouched) {
-                    // Let the Snake class handle the input
-                    mSnake.switchHeading(motionEvent);
-                }
-                break;
-
-            default:
-                break;
+                return true;
+            } else if (!buttonTouched) {
+                // Let the Snake class handle the input
+                mSnake.switchHeading(motionEvent);
+            }
         }
         return true;
     }
+
     public void pause() {
         mPlaying = false;
         try {
