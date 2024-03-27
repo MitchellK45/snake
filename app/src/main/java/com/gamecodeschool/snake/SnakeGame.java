@@ -6,10 +6,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Typeface;
-import android.media.SoundPool;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 
 
 class SnakeGame extends SurfaceView implements Runnable, GameObject{
@@ -42,10 +44,15 @@ class SnakeGame extends SurfaceView implements Runnable, GameObject{
     private Pause_Button mPauseButton;
     private volatile boolean buttonTouched = false;
     private SoundEngine mSoundEngine;
+    Typeface typeface = null;
+    private Bitmap mBackground;
+
 
 
     public SnakeGame(Context context, Point size) {
         super(context);
+
+
 
         // Work out how many pixels each block is
         int blockSize = size.x / NUM_BLOCKS_WIDE;
@@ -58,6 +65,8 @@ class SnakeGame extends SurfaceView implements Runnable, GameObject{
         mPaint = new Paint();
         mCanvas = new Canvas();
         mSoundEngine = new SoundEngine(context);
+        mBackground = BitmapFactory.decodeResource(context.getResources(), R.drawable.dog);
+        mBackground = Bitmap.createScaledBitmap(mBackground, size.x, size.y, true);
 
         // Call the constructors of our game objects
         mApple = new Apple(context,
@@ -143,27 +152,24 @@ class SnakeGame extends SurfaceView implements Runnable, GameObject{
         // Get a lock on the mCanvas
         if (mSurfaceHolder.getSurface().isValid()) {
             mCanvas = mSurfaceHolder.lockCanvas();
-
-            // Fill the screen with a color
-            canvas.drawColor(Color.argb(255, 26, 128, 128 ));
+            canvas.drawBitmap(mBackground, 0, 0, null);
 
             // Set the size and color of the mPaint for the text
             mPaint.setColor(Color.argb(255, 255, 255, 255));
             mPaint.setTextSize(120);
 
-            // Draw the score
             canvas.drawText("" + mScore, 20, 120, mPaint);
+            mCanvas.drawText("Mitchell, Rajesh ", 1400, 60, mPaint);
 
             // Draw the apple,snake,and button
             mApple.draw(canvas, mPaint);
             mSnake.draw(canvas, mPaint);
             mPauseButton.draw(canvas, mPaint);
 
-            mPaint.setColor(Color.argb(255, 255, 255, 255));
-            mPaint.setTextSize(60);
-
             mCanvas.drawText("Mitchell, Rajesh ", 1400, 60, mPaint);
-            Typeface typeface = Typeface.create(Typeface.SERIF, Typeface.BOLD_ITALIC);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                typeface = getResources().getFont(R.font.stonersport);
+            }
             mPaint.setTypeface(typeface);
 
 
