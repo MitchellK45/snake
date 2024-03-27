@@ -11,11 +11,9 @@ import android.os.Build;
 import java.io.IOException;
 
 public class SoundEngine {
-    private SoundPool mSP;
+    private final SoundPool mSP;
     private int mEat_ID = -1;
     private int mCrashID = -1;
-
-
     SoundEngine(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             AudioAttributes audioAttributes = new AudioAttributes.Builder()
@@ -45,7 +43,6 @@ public class SoundEngine {
             // Error
         }
     }
-
     void playEat() {
         mSP.play(mEat_ID, 1, 1, 0, 0, 1);
     }
@@ -54,4 +51,3 @@ public class SoundEngine {
         mSP.play(mCrashID, 1, 1, 0, 0, 1);
     }
 }
-
