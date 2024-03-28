@@ -8,7 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import java.util.Random;
 
-class Apple implements GameObject{
+class Apple extends AbstractAction implements GameObject{
     private final Point location = new Point();
     private final Point mSpawnRange;
     private final int mSize;
@@ -23,7 +23,7 @@ class Apple implements GameObject{
         mBitmapApple = Bitmap.createScaledBitmap(mBitmapApple, s, s, false);
     }
 
-    void spawn(){
+    public void move(){
         Random random = new Random();
         location.x = random.nextInt(mSpawnRange.x) + 1;
         location.y = random.nextInt(mSpawnRange.y - 1) + 1;

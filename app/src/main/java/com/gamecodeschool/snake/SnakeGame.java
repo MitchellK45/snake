@@ -72,7 +72,7 @@ class SnakeGame extends SurfaceView implements Runnable, GameObject{
     private void newGame() {
 
         mSnake.reset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
-        mApple.spawn();
+        mApple.move();
         mScore = 0;
 
         mNextFrameTime = System.currentTimeMillis();
@@ -112,7 +112,7 @@ class SnakeGame extends SurfaceView implements Runnable, GameObject{
         mSnake.move();
 
         if (mSnake.checkDinner(mApple.getLocation())) {
-            mApple.spawn();
+            mApple.move();
             mScore++;
             mSoundEngine.playEat();
         }

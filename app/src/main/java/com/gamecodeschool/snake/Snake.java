@@ -11,7 +11,7 @@ import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
-class Snake implements GameObject{
+class Snake extends AbstractAction implements GameObject{
 
     private final ArrayList<Point> segmentLocations;
     private final int mSegmentSize;
@@ -72,7 +72,7 @@ class Snake implements GameObject{
     }
 
 
-    protected void move() {
+    public void move() {
         // Move the body
         for (int i = segmentLocations.size() - 1; i > 0; i--) {
             segmentLocations.get(i).x = segmentLocations.get(i - 1).x;
